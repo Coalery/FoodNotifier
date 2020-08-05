@@ -23,8 +23,8 @@ class FoodUnit extends StatelessWidget {
         borderRadius: BorderRadius.circular(10),
         boxShadow: [
           BoxShadow(
-            color: Colors.black26,
-            blurRadius: 5
+            color: Colors.black12,
+            blurRadius: 3
           )
         ]
       ),
