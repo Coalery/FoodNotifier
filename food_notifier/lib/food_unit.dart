@@ -33,7 +33,7 @@ class FoodUnit extends StatelessWidget {
           Align(
             alignment: Alignment.centerLeft,
             child: Text(
-              _food.name,
+              _food.f_PRDLST_NM,
               style: TextStyle(
                 fontSize: 28,
                 fontWeight: FontWeight.bold
@@ -46,9 +46,9 @@ class FoodUnit extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
-                Text('유통기한 : ${dateFormat.format(_food.shelfLife)}'),
+                Text('유통기한 : ${_food.f_POG_DAYCNT}'),
                 SizedBox(height: 5),
-                Text('등록일 : ${dateFormat.format(_food.registerDate)}')
+                Text('등록일 : ${_food.f_REGISTER_DATE}')
               ],
             ),
           )

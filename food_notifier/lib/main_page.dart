@@ -1,5 +1,6 @@
 import 'package:barcode_scan/barcode_scan.dart';
 import 'package:flutter/material.dart';
+import 'package:food_notifier/dbhelper.dart';
 import 'package:food_notifier/food.dart';
 import 'package:food_notifier/food_unit.dart';
 
@@ -11,6 +12,25 @@ class MainPage extends StatefulWidget {
 class _MainPageState extends State<MainPage> {
   bool expanded = false;
 
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: SafeArea(
+        child: FutureBuilder(
+          future: DBHelper().getFood('8801791000055'),
+          builder: (_, snapshot) {
+            if(snapshot.hasData) {
+              Food food = snapshot.data;
+              return Center(child: Text(food.f_PRDLST_NM));
+            } else {
+              return Center(child: CircularProgressIndicator());
+            }
+          },
+        ),
+      ),
+    );
+  }
+  /*
   @override
   Widget build(BuildContext context) {
     Icon icon = (expanded == true ? Icon(Icons.keyboard_arrow_down) : Icon(Icons.keyboard_arrow_up));
@@ -93,13 +113,13 @@ class _MainPageState extends State<MainPage> {
                             }
                           }
                       ),
-                      Container(
-                        margin: EdgeInsets.only(top: 50),
-                        child: ListView.builder(
-                          itemBuilder: (_, index) => FoodUnit(food: new Food(name: "옴뇸뇸", shelfLife: DateTime(2020, 10, 11), registerDate: DateTime(2020, 8, 5))),
-                          itemCount: 20,
-                        )
-                      )
+                      // Container(
+                      //   margin: EdgeInsets.only(top: 50),
+                      //   child: ListView.builder(
+                      //     itemBuilder: (_, index) => FoodUnit(food: new Food(name: "옴뇸뇸", shelfLife: DateTime(2020, 10, 11), registerDate: DateTime(2020, 8, 5))),
+                      //     itemCount: 20,
+                      //   )
+                      // )
                     ],
                   ),
                 ),
@@ -109,5 +129,5 @@ class _MainPageState extends State<MainPage> {
         )
       )
     );
-  }
+  }*/
 }
