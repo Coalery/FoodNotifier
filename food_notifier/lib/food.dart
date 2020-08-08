@@ -1,4 +1,6 @@
 class Food {
+  static final Food none = new Food(null, null, null, null, null, null, null, null, null, null, null, null);
+
   final String f_PRDLST_REPORT_NO; // 품목보고(신고)번호
   final String f_PRMS_DT; // 보고일(신고일)
   final String f_END_DT; // 생산중단일

@@ -37,6 +37,9 @@ class DBHelper {
   Future<Food> getFood(String barcode) async {
     Database db = await database;
     var res = await db.rawQuery("select * from Food where BAR_CD='$barcode'");
+    if(res.length == 0) {
+      return Food.none;
+    }
     return Food.byMap(res.first);
   }
 
