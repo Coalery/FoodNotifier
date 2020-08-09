@@ -46,7 +46,11 @@ class _MainPageState extends State<MainPage> {
                         child: Image.asset('assets/bar_code.png', width: 150, height: 150),
                         onPressed: () async {
                           ScanResult result = await BarcodeScanner.scan();
-                          Navigator.pushNamed(context, FoodPage.routeName, arguments: new FoodPageArguments(barcode: result.rawContent));
+                          Navigator.pushNamed(context, FoodPage.routeName, arguments: new FoodPageArguments(barcode: '8801045176338'));
+                          if(result.rawContent == '') {
+                            return;
+                          }
+                          //Navigator.pushNamed(context, FoodPage.routeName, arguments: new FoodPageArguments(barcode: result.rawContent));
                         },
                       ),
                     ),

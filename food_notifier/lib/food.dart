@@ -5,7 +5,7 @@ class Food {
   final String f_PRMS_DT; // 보고일(신고일)
   final String f_END_DT; // 생산중단일
   final String f_PRDLST_NM; // 제품명
-  final String f_POG_DAYCNT; // 유통기한
+  final DateTime f_POG_DAYCNT; // 유통기한
   final String f_PRDLST_DCNM; // 식품 유형
   final String f_BSSH_NM; // 제조사명
   final String f_INDUTY_NM; // 업종
@@ -18,6 +18,42 @@ class Food {
   Food(this.f_PRDLST_REPORT_NO, this.f_PRMS_DT, this.f_END_DT, this.f_PRDLST_NM, this.f_POG_DAYCNT, this.f_PRDLST_DCNM, this.f_BSSH_NM, this.f_INDUTY_NM, this.f_SITE_ADDR, this.f_CLSBIZ_DT, this.f_BAR_CD, this.f_REGISTER_DATE);
 
   factory Food.byMap(Map<String, dynamic> map) {
-    return Food(map['PRDLST_REPORT_NO'], map['PRMS_DT'], map['END_DT'], map['PRDLST_NM'], map['POG_DAYCNT'], map['PRDLST_DCNM'], map['BSSH_NM'], map['INDUTY_NM'], map['SITE_ADDR'], map['CLSBIZ_DT'], map['BAR_CD'], new DateTime(2020, 8, 7));
+    DateTime today = DateTime.now();
+    DateTime onlyDateToday = new DateTime(today.year, today.month, today.day);
+    DateTime resultPog = new DateTime(today.year, today.month, today.day);
+
+    String strPOG = map['POG_DAYCNT'];
+
+    int dateValue = 0;
+
+    if(strPOG.length == 0) {
+      resultPog = resultPog.add(Duration(days: 30));
+    } else {
+      if(strPOG.contains(new RegExp(r'[0-9]'))) {
+        for(int i=0; i<strPOG.length; i++) {
+          if(strPOG[i].contains(new RegExp(r'[0-9]'))) {
+            int val = int.parse(strPOG[i]);
+            dateValue += val;
+            dateValue *= 10;
+          } else {
+            if(dateValue != 0) {
+              break;
+            }
+          }
+        }
+        dateValue ~/= 10;
+        if(strPOG.contains('일')) {
+          resultPog = resultPog.add(Duration(days: dateValue));
+        } else if(strPOG.contains('년')) {
+          resultPog = resultPog.add(Duration(days: dateValue * 365));
+        } else {
+          resultPog = resultPog.add(Duration(days: dateValue * 30));
+        }
+      } else {
+        resultPog = resultPog.add(Duration(days: 30));
+      }
+    }
+
+    return Food(map['PRDLST_REPORT_NO'], map['PRMS_DT'], map['END_DT'], map['PRDLST_NM'], resultPog, map['PRDLST_DCNM'], map['BSSH_NM'], map['INDUTY_NM'], map['SITE_ADDR'], map['CLSBIZ_DT'], map['BAR_CD'], onlyDateToday);
   }
 }
