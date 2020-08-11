@@ -12,7 +12,7 @@ class FoodUnit extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    DateFormat dateFormat = new DateFormat('yyyy.MM.dd.');
+    DateFormat formatter = new DateFormat('yyyy.MM.dd.');
 
     return Container(
       margin: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
@@ -46,9 +46,9 @@ class FoodUnit extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
-                Text('유통기한 : ${_food.f_POG_DAYCNT}'),
+                Text('유통기한 : ${formatter.format(_food.f_POG_DAYCNT)}'),
                 SizedBox(height: 5),
-                Text('등록일 : ${_food.f_REGISTER_DATE}')
+                Text('등록일 : ${formatter.format(_food.f_REGISTER_DATE)}')
               ],
             ),
           )
