@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:food_notifier/food_page.dart';
 import 'package:food_notifier/main_page.dart';
 
 void main() => runApp(MyApp());
@@ -12,8 +11,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       routes: {
         '/' : (context) => MainPage(),
-        MainPage.routeName : (context) => MainPage(),
-        FoodPage.routeName : (context) => FoodPage()
+        MainPage.routeName : (context) => MainPage()
       },
     );
   }
