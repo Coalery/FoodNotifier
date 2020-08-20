@@ -1,7 +1,7 @@
 import 'package:barcode_scan/barcode_scan.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:food_notifier/dbhelper.dart';
+import 'package:food_notifier/db_helper.dart';
 import 'package:food_notifier/food.dart';
 import 'package:intl/intl.dart';
 

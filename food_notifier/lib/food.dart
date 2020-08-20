@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 class Food {
   static final Food none = new Food(null, null, null, null, null, null, null, null, null, null, null, null);
 
@@ -17,12 +19,17 @@ class Food {
 
   Food(this.f_PRDLST_REPORT_NO, this.f_PRMS_DT, this.f_END_DT, this.f_PRDLST_NM, this.f_POG_DAYCNT, this.f_PRDLST_DCNM, this.f_BSSH_NM, this.f_INDUTY_NM, this.f_SITE_ADDR, this.f_CLSBIZ_DT, this.f_BAR_CD, this.f_REGISTER_DATE);
 
-  factory Food.byMap(Map<String, dynamic> map) {
+  factory Food.fromJsonString(String jsonString) {
+    JsonCodec codec = new JsonCodec();
+    return Food.fromJson(codec.decode(jsonString));
+  }
+
+  factory Food.fromJson(dynamic json) {
     DateTime today = DateTime.now();
     DateTime onlyDateToday = new DateTime(today.year, today.month, today.day);
     DateTime resultPog = new DateTime(today.year, today.month, today.day);
 
-    String strPOG = map['POG_DAYCNT'];
+    String strPOG = json['POG_DAYCNT'];
 
     int dateValue = 0;
 
@@ -54,6 +61,6 @@ class Food {
       }
     }
 
-    return Food(map['PRDLST_REPORT_NO'], map['PRMS_DT'], map['END_DT'], map['PRDLST_NM'], resultPog, map['PRDLST_DCNM'], map['BSSH_NM'], map['INDUTY_NM'], map['SITE_ADDR'], map['CLSBIZ_DT'], map['BAR_CD'], onlyDateToday);
+    return Food(json['PRDLST_REPORT_NO'], json['PRMS_DT'], json['END_DT'], json['PRDLST_NM'], resultPog, json['PRDLST_DCNM'], json['BSSH_NM'], json['INDUTY_NM'], json['SITE_ADDR'], json['CLSBIZ_DT'], json['BAR_CD'], onlyDateToday);
   }
 }
