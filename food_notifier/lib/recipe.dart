@@ -9,12 +9,12 @@ class Recipe {
   final String f_RCP_NM; // 메뉴명
   final String f_RCP_WAY2; // 조리방법
   final String f_RCP_PAT2; // 요리종류
-  final int f_INFO_WGT; // 중량(1인분)
-  final int f_INFO_ENG; // 열량
-  final int f_INFO_CAR; // 탄수화물
-  final int f_INFO_PRO; // 단백질
-  final int f_INFO_FAT; // 지방
-  final int f_INFO_NA; // 나트륨
+  final double f_INFO_WGT; // 중량(1인분)
+  final double f_INFO_ENG; // 열량
+  final double f_INFO_CAR; // 탄수화물
+  final double f_INFO_PRO; // 단백질
+  final double f_INFO_FAT; // 지방
+  final double f_INFO_NA; // 나트륨
   final String f_HASH_TAG; // 해시태그
   final Image f_ATT_FILE_NO_MAIN; // 이미지경로(소)
   final Image f_ATT_MILE_NO_MK; // 이미지경로(대)
@@ -28,16 +28,24 @@ class Recipe {
     return Recipe.fromJson(codec.decode(jsonString));
   }
 
-  factory Recipe.fromJson(dynamic json) {
-    int wgt = int.parse(json['INFO_WGT']);
-    int eng = int.parse(json['INFO_ENG']);
-    int car = int.parse(json['INFO_CAR']);
-    int pro = int.parse(json['INFO_PRO']);
-    int fat = int.parse(json['INFO_FAT']);
-    int na = int.parse(json['INFO_NA']);
+  static double parse(String target) {
+    if(target == '') {
+      return 0.0;
+    } else return double.parse(target);
+  }
 
-    Image mainImage = Image.network(json['ATT_FILE_NO_MAIN']);
-    Image mkImage = Image.network(json['ATT_FILE_NO_MK']);
+  factory Recipe.fromJson(dynamic json) {
+    double wgt = parse(json['INFO_WGT']);
+    double eng = parse(json['INFO_ENG']);
+    double car = parse(json['INFO_CAR']);
+    double pro = parse(json['INFO_PRO']);
+    double fat = parse(json['INFO_FAT']);
+    double na = parse(json['INFO_NA']);
+
+    Image mainImage;
+    Image mkImage;
+    // Image mainImage = Image.network(json['ATT_FILE_NO_MAIN']);
+    // Image mkImage = Image.network(json['ATT_FILE_NO_MK']);
 
     List<ProcessUnit> processes = [];
     for(int i=1; i<=20; i++) {
@@ -49,7 +57,7 @@ class Recipe {
 
       Image image;
       if(imageURL != '') {
-        image = Image.network(imageURL);
+        // image = Image.network(imageURL);
       }
 
       ProcessUnit pUnit = new ProcessUnit(image, description);

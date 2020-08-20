@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:food_notifier/db_helper.dart';
 import 'package:food_notifier/food.dart';
+import 'package:food_notifier/recipe.dart';
 import 'package:intl/intl.dart';
 
 class MainPage extends StatefulWidget {
@@ -113,6 +114,26 @@ class _MainPageState extends State<MainPage> {
                       ),
                     ),
                   ),
+                  SizedBox(height: 20),
+                  FutureBuilder<List<Recipe>>(
+                    future: DBHelper.getRecipes('카놀라유 2g, 달걀 60g(1개), 닭 가슴살 40g, 마요네즈 5g(1작은술), 천일염 0.2g, 숙주나물 40g, 양배추 30g'),
+                    builder: (context, snapshot) {
+                      if(snapshot.data != null) {
+                        List<Recipe> recipesData = snapshot.data;
+                        return Column(
+                          children: List.generate(
+                            recipesData.length,
+                            (index) {
+                              Recipe recipe = recipesData[index];
+                              return Text(recipe.f_RCP_NM);
+                            }
+                          )
+                        );
+                      } else {
+                        return Center(child: CircularProgressIndicator());
+                      }
+                    },
+                  ),
                   SizedBox(height: 20)
                 ],
               ),
@@ -149,7 +170,7 @@ class _MainPageState extends State<MainPage> {
                           content: Container(
                             margin: EdgeInsets.symmetric(vertical: 10),
                             child: FutureBuilder(
-                              future: DBHelper().getFood(result.rawContent),
+                              future: DBHelper.getFood(result.rawContent),
                               builder: (_, snapshot) {
                                 if(snapshot.hasData) {
                                   Food food = snapshot.data;
