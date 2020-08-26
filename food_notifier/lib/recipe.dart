@@ -34,6 +34,14 @@ class Recipe {
     } else return double.parse(target);
   }
 
+  static Image getImage(String url) {
+    Image errorImage = Image.asset('assets/white.png');
+    if(url == null) return errorImage;
+    if(url == '') return errorImage;
+    if(!url.startsWith('http')) return errorImage;
+    return Image.network(url, errorBuilder: (_, __, ___) => errorImage,);
+  }
+
   factory Recipe.fromJson(dynamic json) {
     double wgt = parse(json['INFO_WGT']);
     double eng = parse(json['INFO_ENG']);
@@ -42,10 +50,8 @@ class Recipe {
     double fat = parse(json['INFO_FAT']);
     double na = parse(json['INFO_NA']);
 
-    Image mainImage;
-    Image mkImage;
-    // Image mainImage = Image.network(json['ATT_FILE_NO_MAIN']);
-    // Image mkImage = Image.network(json['ATT_FILE_NO_MK']);
+    Image mainImage = getImage(json['ATT_FILE_NO_MAIN']);
+    Image mkImage = getImage(json['ATT_FILE_NO_MK']);
 
     List<ProcessUnit> processes = [];
     for(int i=1; i<=20; i++) {
@@ -57,12 +63,9 @@ class Recipe {
 
       Image image;
       if(imageURL != '') {
-        // image = Image.network(imageURL);
+        image = getImage(imageURL,);
       }
-
-      ProcessUnit pUnit = new ProcessUnit(image, description);
-
-      processes.add(pUnit);
+      processes.add(new ProcessUnit(image, description));
     }
 
     return Recipe(json['RCP_SEQ'], json['RCP_NM'], json['RCP_WAY2'], json['RCP_PAT2'], wgt, eng, car, pro, fat, na, json['HASH_TAG'], mainImage, mkImage, json['RCP_PARTS_DTLS'], processes);
