@@ -8,6 +8,8 @@ class RecipePageArguments {
 }
 
 class RecipePage extends StatelessWidget {
+  static final routeName = '/recipe';
+
   @override
   Widget build(BuildContext context) {
     RecipePageArguments arguments = ModalRoute.of(context).settings.arguments;
