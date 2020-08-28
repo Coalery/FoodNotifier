@@ -63,9 +63,12 @@ class Recipe {
 
       Image image;
       if(imageURL != '') {
-        image = getImage(imageURL,);
+        image = getImage(imageURL);
       }
-      processes.add(new ProcessUnit(image, description));
+
+      if(description != null && description != '') {
+        processes.add(new ProcessUnit(image, description));
+      }
     }
 
     return Recipe(json['RCP_SEQ'], json['RCP_NM'], json['RCP_WAY2'], json['RCP_PAT2'], wgt, eng, car, pro, fat, na, json['HASH_TAG'], mainImage, mkImage, json['RCP_PARTS_DTLS'], processes);
