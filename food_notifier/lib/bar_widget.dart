@@ -42,6 +42,7 @@ class BarWidget extends StatelessWidget {
             ],
           ),
           decoration: BoxDecoration(
+            color: Colors.white,
             boxShadow: [
               BoxShadow(
                 color: Colors.black26,
