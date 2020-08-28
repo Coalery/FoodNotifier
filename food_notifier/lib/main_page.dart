@@ -2,8 +2,9 @@ import 'package:barcode_scan/barcode_scan.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:food_notifier/db_helper.dart';
+import 'package:food_notifier/dummy/dummy_food.dart';
 import 'package:food_notifier/food.dart';
-import 'package:food_notifier/recipe.dart';
+import 'package:food_notifier/food_page.dart';
 import 'package:intl/intl.dart';
 
 class MainPage extends StatefulWidget {
@@ -51,21 +52,27 @@ class _MainPageState extends State<MainPage> {
                       scrollDirection: Axis.horizontal,
                       itemCount: 10,
                       itemBuilder: (context, index) {
-                        return Container(
-                          margin: EdgeInsets.only(top: 10, bottom: 10, left: 20, right: 20),
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(10),
-                            boxShadow: [
-                              BoxShadow(
-                                blurRadius: 5,
-                                color: Colors.black12
-                              )
-                            ]
-                          ),
+                        return GestureDetector(
                           child: Container(
-                            width: 300,
+                            margin: EdgeInsets.only(top: 10, bottom: 10, left: 20, right: 20),
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(10),
+                              boxShadow: [
+                                BoxShadow(
+                                  blurRadius: 5,
+                                  color: Colors.black12
+                                )
+                              ]
+                            ),
+                            child: Container(
+                              width: 300,
+                            ),
                           ),
+                          onTap: () {
+                            Food food = Food.fromJsonString(DummyFood.jsons[0]);
+                            Navigator.pushNamed(context, FoodPage.routeName, arguments: FoodPageArguments(food));
+                          },
                         );
                       },
                     ),
@@ -115,26 +122,6 @@ class _MainPageState extends State<MainPage> {
                     ),
                   ),
                   SizedBox(height: 20),
-                  FutureBuilder<List<Recipe>>(
-                    future: DBHelper.getRecipes('카놀라유 2g, 달걀 60g(1개), 닭 가슴살 40g, 마요네즈 5g(1작은술), 천일염 0.2g, 숙주나물 40g, 양배추 30g'),
-                    builder: (context, snapshot) {
-                      if(snapshot.data != null) {
-                        List<Recipe> recipesData = snapshot.data;
-                        return Column(
-                          children: List.generate(
-                            recipesData.length,
-                            (index) {
-                              Recipe recipe = recipesData[index];
-                              return Text(recipe.f_RCP_NM);
-                            }
-                          )
-                        );
-                      } else {
-                        return Center(child: CircularProgressIndicator());
-                      }
-                    },
-                  ),
-                  SizedBox(height: 20)
                 ],
               ),
             ),
