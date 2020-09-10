@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:food_notifier/bar_widget.dart';
-import 'package:food_notifier/recipe.dart';
+import 'package:food_notifier/unit/recipe.dart';
 
 class RecipePageArguments {
   Recipe recipe;

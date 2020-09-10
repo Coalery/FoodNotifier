@@ -3,7 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:food_notifier/db_helper.dart';
 import 'package:food_notifier/dummy/dummy_food.dart';
-import 'package:food_notifier/food.dart';
+import 'package:food_notifier/unit/food.dart';
 import 'package:food_notifier/food_page.dart';
 import 'package:intl/intl.dart';
 
@@ -172,7 +172,7 @@ class _MainPageState extends State<MainPage> {
                                       mainAxisAlignment: MainAxisAlignment.center,
                                       children: [
                                         Text(
-                                          food.f_PRDLST_NM,
+                                          food.productName,
                                           style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                                         ),
                                         SizedBox(height: 20),
@@ -182,7 +182,7 @@ class _MainPageState extends State<MainPage> {
                                         ),
                                         SizedBox(height: 10),
                                         Text(
-                                          formatter.format(food.f_POG_DAYCNT),
+                                          formatter.format(food.shelfLife),
                                           style: TextStyle(fontSize: 14),
                                         )
                                       ],

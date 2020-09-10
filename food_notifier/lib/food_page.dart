@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:food_notifier/bar_widget.dart';
-import 'package:food_notifier/food.dart';
+import 'package:food_notifier/unit/food.dart';
 
 class FoodPageArguments {
   final Food food;
@@ -59,7 +59,7 @@ class _FoodPageState extends State<FoodPage> {
     return Scaffold(
       body: SafeArea(
         child: BarWidget(
-          title: food.f_PRDLST_NM,
+          title: food.productName,
           child: AnimatedList(
             key: _listKey,
             padding: EdgeInsets.all(10),

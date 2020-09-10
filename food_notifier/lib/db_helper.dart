@@ -1,7 +1,7 @@
 import 'dart:convert';
 
-import 'package:food_notifier/food.dart';
-import 'package:food_notifier/recipe.dart';
+import 'package:food_notifier/unit/food.dart';
+import 'package:food_notifier/unit/recipe.dart';
 import 'package:http/http.dart' as http;
 
 class DBHelper {
