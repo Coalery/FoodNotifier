@@ -5,7 +5,7 @@ import 'package:food_notifier/unit/recipe.dart';
 import 'package:http/http.dart' as http;
 
 class DBHelper {
-  static const String IP = '13.125.1.184';
+  static const String IP = '13.125.39.144';
 
   static Future<Food> getFood(String barcode) async {
     http.Response response = await http.get('http://$IP:3000/barcode/' + barcode);
