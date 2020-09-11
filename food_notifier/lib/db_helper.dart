@@ -8,10 +8,12 @@ class DBHelper {
   static const String IP = '13.125.39.144';
 
   static Future<Food> getFood(String barcode) async {
-    http.Response response = await http.get('http://$IP:3000/barcode/' + barcode);
+    String requestURL = 'http://$IP:3000/barcode/' + barcode;
+
+    http.Response response = await http.get(requestURL);
     String body = response.body;
 
-    return Food.fromJsonString(body.substring(1, body.length - 1));
+    return Food.fromJsonString(body);
   }
 
   static Future<List<Recipe>> getRecipes(String ingredient) async {
