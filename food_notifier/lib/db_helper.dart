@@ -1,30 +1,56 @@
 import 'dart:convert';
 
-import 'package:food_notifier/unit/food.dart';
+import 'package:food_notifier/unit/barcode.dart';
 import 'package:food_notifier/unit/recipe.dart';
+import 'package:food_notifier/unit/user.dart';
 import 'package:http/http.dart' as http;
 
 class DBHelper {
   static const String IP = '13.125.39.144';
 
-  static Future<Food> getFood(String barcode) async {
-    String requestURL = 'http://$IP:3000/barcode/' + barcode;
+  // GET
 
-    http.Response response = await http.get(requestURL);
-    String body = response.body;
+  static Future<Barcode> getBarcode(String barcode) async {
+    http.Response response = await http.get('http://$IP:3000/barcode/$barcode');
+    if(response.body == '{}') return null;
+    return Barcode.fromJsonString(response.body);
+  }
 
-    return Food.fromJsonString(body);
+  static Future<List<Barcode>> getOutofDateFoods(int uid) async {
+    http.Response response = await http.get('http://$IP:3000/outofdatefoods/$uid');
+    JsonCodec codec = new JsonCodec();
+
+    dynamic rawJson = codec.decode(response.body);
+    List<dynamic> jsonArray = List.from(rawJson['result']);
+    List<Barcode> resultList = [];
+    for(dynamic json in jsonArray) {
+      resultList.add(Barcode.fromJson(json));
+    }
+    return resultList;
   }
 
   static Future<List<Recipe>> getRecipes(String ingredient) async {
-    http.Response response = await http.get('http://$IP:3000/recipe/' + ingredient);
+    http.Response response = await http.get('http://$IP:3000/recipe/$ingredient');
     JsonCodec codec = new JsonCodec();
 
-    List<dynamic> jsonArray = List.from(codec.decode(response.body));
+    dynamic rawJson = codec.decode(response.body);
+    List<dynamic> jsonArray = List.from(rawJson['result']);
     List<Recipe> resultList = [];
     for(dynamic json in jsonArray) {
       resultList.add(Recipe.fromJson(json));
     }
     return resultList;
+  }
+
+  static Future<User> getUser(String uid) async {
+    http.Response response = await http.get('http://$IP:3000/user/$uid');
+    if(response.body == '{}') return null;
+    return User.fromJsonString(response.body);
+  }
+
+  // POST
+
+  static Future<void> postUser() async {
+
   }
 }

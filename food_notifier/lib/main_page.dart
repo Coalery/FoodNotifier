@@ -2,10 +2,12 @@ import 'package:barcode_scan/barcode_scan.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:food_notifier/db_helper.dart';
-import 'package:food_notifier/dummy/dummy_food.dart';
-import 'package:food_notifier/unit/food.dart';
+import 'package:food_notifier/provider/login_provider.dart';
+import 'package:food_notifier/unit/barcode.dart';
 import 'package:food_notifier/food_page.dart';
+import 'package:food_notifier/unit/user.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 
 class MainPage extends StatefulWidget {
   static String routeName = '/main';
@@ -15,10 +17,22 @@ class MainPage extends StatefulWidget {
 }
 
 class _MainPageState extends State<MainPage> {
-  bool expanded = false;
+  Future<List<Barcode>> _futureBarcodeList;
+
+  @override
+  void initState() {
+    super.initState();
+    _futureBarcodeList = DBHelper.getOutofDateFoods(1);
+  }
 
   @override
   Widget build(BuildContext context) {
+    User me = Provider.of<LoginProvider>(context).me;
+
+    if(me == null) {
+      
+    }
+
     return Scaffold(
       body: SafeArea(
         child: Stack(
@@ -45,37 +59,45 @@ class _MainPageState extends State<MainPage> {
                       ]
                     )
                   ),
-                  Container(
-                    width: double.infinity,
-                    height: 200,
-                    child: ListView.builder(
-                      scrollDirection: Axis.horizontal,
-                      itemCount: 10,
-                      itemBuilder: (context, index) {
-                        return GestureDetector(
-                          child: Container(
-                            margin: EdgeInsets.only(top: 10, bottom: 10, left: 20, right: 20),
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(10),
-                              boxShadow: [
-                                BoxShadow(
-                                  blurRadius: 5,
-                                  color: Colors.black12
-                                )
-                              ]
-                            ),
-                            child: Container(
-                              width: 300,
-                            ),
+                  FutureBuilder<List<Barcode>>(
+                    future: _futureBarcodeList,
+                    builder: (context, snapshot) {
+                      if(snapshot.hasData) {
+                        List<Barcode> foodList = snapshot.data;
+
+                        return Container(
+                          width: double.infinity,
+                          height: 200,
+                          child: ListView.builder(
+                            scrollDirection: Axis.horizontal,
+                            itemCount: 10,
+                            itemBuilder: (context, index) {
+                              return GestureDetector(
+                                child: Container(
+                                  margin: EdgeInsets.only(top: 10, bottom: 10, left: 20, right: 20),
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(10),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        blurRadius: 5,
+                                        color: Colors.black12
+                                      )
+                                    ]
+                                  ),
+                                  child: Container(
+                                    width: 300,
+                                  ),
+                                ),
+                                onTap: () => Navigator.pushNamed(context, FoodPage.routeName, arguments: FoodPageArguments(foodList[index])),
+                              );
+                            },
                           ),
-                          onTap: () {
-                            Food food = Food.fromJsonString(DummyFood.jsons[0]);
-                            Navigator.pushNamed(context, FoodPage.routeName, arguments: FoodPageArguments(food));
-                          },
                         );
-                      },
-                    ),
+                      } else {
+                        return Center(child: CircularProgressIndicator());
+                      }
+                    },
                   ),
                   SizedBox(height: 40),
                   Padding(
@@ -157,11 +179,11 @@ class _MainPageState extends State<MainPage> {
                           content: Container(
                             margin: EdgeInsets.symmetric(vertical: 10),
                             child: FutureBuilder(
-                              future: DBHelper.getFood(result.rawContent),
+                              future: DBHelper.getBarcode(result.rawContent),
                               builder: (_, snapshot) {
                                 if(snapshot.hasData) {
-                                  Food food = snapshot.data;
-                                  if(food == Food.none) {
+                                  Barcode food = snapshot.data;
+                                  if(food == null) {
                                     return Center(child: Text('바코드를 인식할 수 없습니다.'));
                                   }
 

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:food_notifier/bar_widget.dart';
-import 'package:food_notifier/unit/food.dart';
+import 'package:food_notifier/unit/barcode.dart';
 
 class FoodPageArguments {
-  final Food food;
+  final Barcode food;
   FoodPageArguments(this.food);
 }
 
@@ -17,12 +17,6 @@ class FoodPage extends StatefulWidget {
 class _FoodPageState extends State<FoodPage> {
   List<Widget> _listItems = <Widget>[];
   final GlobalKey<AnimatedListState> _listKey = GlobalKey();
-
-  @override
-  void initState() {
-    super.initState();
-    _loadItems();
-  }
 
   void _loadItems() {
     final fetchedList = [
@@ -54,7 +48,7 @@ class _FoodPageState extends State<FoodPage> {
   @override
   Widget build(BuildContext context) {
     FoodPageArguments arguments = ModalRoute.of(context).settings.arguments;
-    Food food = arguments.food;
+    Barcode food = arguments.food;
 
     return Scaffold(
       body: SafeArea(
@@ -63,7 +57,6 @@ class _FoodPageState extends State<FoodPage> {
           child: AnimatedList(
             key: _listKey,
             padding: EdgeInsets.all(10),
-            initialItemCount: _listItems.length,
             itemBuilder: (context, index, animation) {
               return SlideTransition(
                 position: CurvedAnimation(
