@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:food_notifier/main_page.dart';
 import 'package:food_notifier/provider/login_provider.dart';
 import 'package:provider/provider.dart';
@@ -11,6 +12,10 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+  TextEditingController _nameController = new TextEditingController();
+  TextEditingController _ageController = new TextEditingController();
+  TextEditingController _jobController = new TextEditingController();
+
   int _groupValue = 0;
 
   @override
@@ -62,7 +67,7 @@ class _LoginPageState extends State<LoginPage> {
                     SizedBox(width: 15),
                     Expanded(
                       child: TextField(
-                        
+                        controller: _nameController,
                       ),
                     )
                   ],
@@ -77,7 +82,9 @@ class _LoginPageState extends State<LoginPage> {
                     SizedBox(width: 15),
                     Expanded(
                       child: TextField(
-                        
+                        keyboardType: TextInputType.number,
+                        inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                        controller: _ageController,
                       ),
                     )
                   ],
@@ -121,7 +128,7 @@ class _LoginPageState extends State<LoginPage> {
                     SizedBox(width: 15),
                     Expanded(
                       child: TextField(
-                        
+                        controller: _jobController,
                       ),
                     )
                   ],
