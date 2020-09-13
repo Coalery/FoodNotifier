@@ -18,7 +18,7 @@ class RecipePage extends StatelessWidget {
     return Scaffold(
       body: SafeArea(
         child: BarWidget(
-          title: recipe.f_RCP_NM,
+          title: recipe.name,
           child: Container(
             
           ),

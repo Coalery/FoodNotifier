@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:food_notifier/db_helper.dart';
 import 'package:food_notifier/main_page.dart';
 import 'package:food_notifier/provider/login_provider.dart';
+import 'package:food_notifier/unit/user.dart';
 import 'package:provider/provider.dart';
 
 class LoginPage extends StatefulWidget {
@@ -153,7 +155,7 @@ class _LoginPageState extends State<LoginPage> {
                   child: FlatButton(
                     color: Colors.blueAccent,
                     child: Text('완료', style: TextStyle(color: Colors.white, fontSize: 16)),
-                    onPressed: () {
+                    onPressed: () async {
                       if(_nameController.text.isEmpty) {
                         _scaffoldKey.currentState.showSnackBar(SnackBar(content: Text('이름을 입력해주세요!'), duration: Duration(seconds: 2)));
                         FocusScope.of(context).requestFocus(_nameFocusNode);
@@ -169,6 +171,24 @@ class _LoginPageState extends State<LoginPage> {
                       } else if(_groupValue == 0) {
                         _scaffoldKey.currentState.showSnackBar(SnackBar(content: Text('성별을 선택해주세요!'), duration: Duration(seconds: 2)));
                         return;
+                      }
+                      String name = _nameController.text;
+                      int age = int.parse(_ageController.text);
+                      String gender = _groupValue == 1 ? 'M' : 'F';
+                      String job = _jobController.text;
+
+                      String result = await DBHelper.postUser(name, age, gender, job);
+
+                      if(result != null) {
+                        User me = new User(result, name, gender, age, job);
+                        Provider.of<LoginProvider>(context, listen: false).setLogin(result);
+                        Provider.of<LoginProvider>(context, listen: false).me = me;
+                        Navigator.pushNamed(context, MainPage.routeName);
+                      } else {
+                        _scaffoldKey.currentState.showSnackBar(SnackBar(
+                          content: Text('정보를 보내던 중, 오류가 발생하였습니다.'),
+                          backgroundColor: Colors.redAccent,
+                        ));
                       }
                     },
                   )

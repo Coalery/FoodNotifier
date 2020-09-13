@@ -50,7 +50,25 @@ class DBHelper {
 
   // POST
 
-  static Future<void> postUser() async {
+  static Future<String> postUser(String name, int age, String gender, String job) async {
+    http.Response response = await http.post(
+      'http://$IP:3000/adduser',
+      headers: {
+        'Content-Type': 'application/json; charset=UTF-8'
+      },
+      body: jsonEncode({
+        'name' : name,
+        'age' : age,
+        'gender' : gender,
+        'job' : job
+      })
+    );
+    dynamic json = jsonDecode(response.body);
 
+    if(json['status'] == 'success') {
+      return json['uid'];
+    } else {
+      return null;
+    }
   }
 }

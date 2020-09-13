@@ -17,7 +17,6 @@ class Barcode {
 
   factory Barcode.fromJson(dynamic json) {
     DateTime today = DateTime.now();
-    DateTime registerDate = new DateTime(today.year, today.month, today.day);
     DateTime shelfLife = new DateTime(today.year, today.month, today.day);
 
     String strPOG = json['shelf_life'];
