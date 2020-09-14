@@ -44,4 +44,9 @@ class LoginProvider with ChangeNotifier {
     _me = value;
     notifyListeners();
   }
+
+  Future<String> getUserID() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.getString(KEY_USER_ID);
+  }
 }

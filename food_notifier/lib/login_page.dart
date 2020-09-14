@@ -37,6 +37,9 @@ class _LoginPageState extends State<LoginPage> {
 
     LoginProvider loginProvider = Provider.of<LoginProvider>(context, listen: false);
     if(loginProvider.isLogin) {
+      String uid = await loginProvider.getUserID();
+      User user = await DBHelper.getUser(uid);
+      Provider.of<LoginProvider>(context, listen: false).me = user;
       Navigator.pushNamed(context, MainPage.routeName);
     }
   }
@@ -177,7 +180,7 @@ class _LoginPageState extends State<LoginPage> {
                       String gender = _groupValue == 1 ? 'M' : 'F';
                       String job = _jobController.text;
 
-                      String result = await DBHelper.postUser(name, age, gender, job);
+                      String result = await DBHelper.postUserIfNotExist(name, age, gender, job);
 
                       if(result != null) {
                         User me = new User(result, name, gender, age, job);

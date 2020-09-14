@@ -50,8 +50,15 @@ class DBHelper {
 
   // POST
 
-  static Future<String> postUser(String name, int age, String gender, String job) async {
-    http.Response response = await http.post(
+  static Future<String> postUserIfNotExist(String name, int age, String gender, String job) async {
+    http.Response existResponse = await http.get('http://$IP:3000/userinfo?name=$name&age=$age&gender=$gender&job=$job');
+    dynamic existResponseJSON = jsonDecode(existResponse.body);
+
+    if(existResponseJSON['status']) {
+      return existResponseJSON['info']['id'];
+    }
+
+    http.Response postResponse = await http.post(
       'http://$IP:3000/adduser',
       headers: {
         'Content-Type': 'application/json; charset=UTF-8'
@@ -63,7 +70,7 @@ class DBHelper {
         'job' : job
       })
     );
-    dynamic json = jsonDecode(response.body);
+    dynamic json = jsonDecode(postResponse.body);
 
     if(json['status'] == 'success') {
       return json['uid'];
