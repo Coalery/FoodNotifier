@@ -5,6 +5,7 @@ import 'package:food_notifier/db_helper.dart';
 import 'package:food_notifier/provider/login_provider.dart';
 import 'package:food_notifier/unit/barcode.dart';
 import 'package:food_notifier/food_page.dart';
+import 'package:food_notifier/unit/food.dart';
 import 'package:food_notifier/unit/user.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -17,23 +18,14 @@ class MainPage extends StatefulWidget {
 }
 
 class _MainPageState extends State<MainPage> {
-  Future<List<Barcode>> _futureBarcodeList;
-
-  @override
-  void initState() {
-    super.initState();
-    _futureBarcodeList = DBHelper.getOutofDateFoods(1);
-  }
+  GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
   @override
   Widget build(BuildContext context) {
     User me = Provider.of<LoginProvider>(context).me;
 
-    if(me == null) {
-      
-    }
-
     return Scaffold(
+      key: _scaffoldKey,
       body: SafeArea(
         child: Stack(
           children: [
@@ -59,22 +51,24 @@ class _MainPageState extends State<MainPage> {
                       ]
                     )
                   ),
-                  FutureBuilder<List<Barcode>>(
-                    future: _futureBarcodeList,
+                  FutureBuilder<List<Food>>(
+                    future: DBHelper.getOutofDateFoods(me),
                     builder: (context, snapshot) {
                       if(snapshot.hasData) {
-                        List<Barcode> foodList = snapshot.data;
+                        List<Food> foodList = snapshot.data;
 
                         return Container(
                           width: double.infinity,
                           height: 200,
                           child: ListView.builder(
                             scrollDirection: Axis.horizontal,
-                            itemCount: 10,
+                            itemCount: foodList.length,
                             itemBuilder: (context, index) {
                               return GestureDetector(
                                 child: Container(
+                                  width: 300,
                                   margin: EdgeInsets.only(top: 10, bottom: 10, left: 20, right: 20),
+                                  padding: EdgeInsets.all(20),
                                   decoration: BoxDecoration(
                                     color: Colors.white,
                                     borderRadius: BorderRadius.circular(10),
@@ -85,8 +79,11 @@ class _MainPageState extends State<MainPage> {
                                       )
                                     ]
                                   ),
-                                  child: Container(
-                                    width: 300,
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(foodList[index].barcode.productName)
+                                    ],
                                   ),
                                 ),
                                 onTap: () => Navigator.pushNamed(context, FoodPage.routeName, arguments: FoodPageArguments(foodList[index])),
@@ -172,6 +169,8 @@ class _MainPageState extends State<MainPage> {
                       return;
                     }
 
+                    Barcode food;
+
                     showCupertinoDialog(
                       context: context,
                       builder: (context) {
@@ -182,7 +181,7 @@ class _MainPageState extends State<MainPage> {
                               future: DBHelper.getBarcode(result.rawContent),
                               builder: (_, snapshot) {
                                 if(snapshot.hasData) {
-                                  Barcode food = snapshot.data;
+                                  food = snapshot.data;
                                   if(food == null) {
                                     return Center(child: Text('바코드를 인식할 수 없습니다.'));
                                   }
@@ -219,7 +218,20 @@ class _MainPageState extends State<MainPage> {
                           actions: [
                             CupertinoDialogAction(
                               child: Text("등록"),
-                              onPressed: () {
+                              onPressed: () async {
+                                if(me == null || food == null) {
+                                  return;
+                                }
+                                print(me.id);
+                                bool isSuccess = await DBHelper.postFood(me.id, food.id, DateTime.now());
+                                if(!isSuccess) {
+                                  _scaffoldKey.currentState.showSnackBar(
+                                    SnackBar(
+                                      content: Text('음식을 등록하는데 실패하였습니다!'),
+                                      backgroundColor: Colors.redAccent,
+                                    )
+                                  );
+                                }
                                 Navigator.pop(context);
                               },
                             ),

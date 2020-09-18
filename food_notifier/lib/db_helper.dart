@@ -1,8 +1,10 @@
 import 'dart:convert';
 
 import 'package:food_notifier/unit/barcode.dart';
+import 'package:food_notifier/unit/food.dart';
 import 'package:food_notifier/unit/recipe.dart';
 import 'package:food_notifier/unit/user.dart';
+import 'package:food_notifier/util.dart';
 import 'package:http/http.dart' as http;
 
 class DBHelper {
@@ -16,16 +18,29 @@ class DBHelper {
     return Barcode.fromJsonString(response.body);
   }
 
-  static Future<List<Barcode>> getOutofDateFoods(int uid) async {
-    http.Response response = await http.get('http://$IP:3000/outofdatefoods/$uid');
+  static Future<Barcode> getBarcodeById(String bid) async {
+    http.Response response = await http.get('http://$IP:3000/barcodeid/$bid');
+    if(response.body == '{}') return null;
+    return Barcode.fromJsonString(response.body);
+  }
+
+  static Future<List<Food>> getOutofDateFoods(User user) async {
+    http.Response response = await http.get('http://$IP:3000/outofdatefoods/${user.id}');
     JsonCodec codec = new JsonCodec();
 
     dynamic rawJson = codec.decode(response.body);
     List<dynamic> jsonArray = List.from(rawJson['result']);
-    List<Barcode> resultList = [];
+    List<Food> resultList = [];
+
     for(dynamic json in jsonArray) {
-      resultList.add(Barcode.fromJson(json));
+      String id = json['id'];
+      Barcode barcode = await getBarcodeById(json['bid']);
+      DateTime registerDateTime = parseStringToDateTime(json['registerDateTime']);
+
+      Food newFood = new Food(id, user, barcode, registerDateTime);
+      resultList.add(newFood);
     }
+    
     return resultList;
   }
 
@@ -44,8 +59,10 @@ class DBHelper {
 
   static Future<User> getUser(String uid) async {
     http.Response response = await http.get('http://$IP:3000/user/$uid');
-    if(response.body == '{}') return null;
-    return User.fromJsonString(response.body);
+    dynamic resultJSON = jsonDecode(response.body);
+
+    if(resultJSON['status'] == 'error') return null;
+    return User.fromJson(resultJSON['info']);
   }
 
   // POST
@@ -77,5 +94,22 @@ class DBHelper {
     } else {
       return null;
     }
+  }
+
+  static Future<bool> postFood(String uid, String fid, DateTime registerTime) async {
+    http.Response postResponse = await http.post(
+      'http://$IP:3000/addfood',
+      headers: {
+        'Content-Type': 'application/json; charset=UTF-8'
+      },
+      body: jsonEncode({
+        'uid' : uid,
+        'fid' : fid,
+        'registerDateTime' : parseDateTimeToString(registerTime)
+      })
+    );
+    dynamic json = jsonDecode(postResponse.body);
+    bool isSuccess = json['status'] == 'success';
+    return isSuccess;
   }
 }

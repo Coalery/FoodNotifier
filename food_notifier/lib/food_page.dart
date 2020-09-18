@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:food_notifier/bar_widget.dart';
-import 'package:food_notifier/unit/barcode.dart';
+import 'package:food_notifier/unit/food.dart';
 
 class FoodPageArguments {
-  final Barcode food;
+  final Food food;
   FoodPageArguments(this.food);
 }
 
@@ -48,12 +48,12 @@ class _FoodPageState extends State<FoodPage> {
   @override
   Widget build(BuildContext context) {
     FoodPageArguments arguments = ModalRoute.of(context).settings.arguments;
-    Barcode food = arguments.food;
+    Food food = arguments.food;
 
     return Scaffold(
       body: SafeArea(
         child: BarWidget(
-          title: food.productName,
+          title: food.barcode.productName,
           child: AnimatedList(
             key: _listKey,
             padding: EdgeInsets.all(10),
