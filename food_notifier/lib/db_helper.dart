@@ -63,8 +63,8 @@ class DBHelper {
   static Future<String> postUserIfNotExist(String name, int age, String gender, String job) async {
     http.Response existResponse = await http.get('http://$IP:3000/userinfo?name=$name&age=$age&gender=$gender&job=$job');
     dynamic existResponseJSON = jsonDecode(existResponse.body);
-    bool success = existResponseJSON['status'];
-    if(!success) {
+    bool existSuccess = existResponseJSON['status'];
+    if(existSuccess) {
       return existResponseJSON['info']['id'];
     }
 
@@ -74,8 +74,9 @@ class DBHelper {
       body: jsonEncode({'name' : name, 'age' : age, 'gender' : gender, 'job' : job})
     );
     dynamic json = jsonDecode(postResponse.body);
+    bool success = json['status'];
 
-    if(json['status'] == 'success') {
+    if(success) {
       return json['uid'];
     } else {
       return null;
