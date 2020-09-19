@@ -7,8 +7,9 @@ class Barcode {
   final String makerName;
   final String productName;
   final DateTime shelfLife;
+  final int remainedDays;
 
-  Barcode(this.id, this.barcode, this.foodType, this.makerName, this.productName, this.shelfLife);
+  Barcode(this.id, this.barcode, this.foodType, this.makerName, this.productName, this.shelfLife, this.remainedDays);
 
   factory Barcode.fromJsonString(String jsonString) {
     JsonCodec codec = new JsonCodec();
@@ -51,6 +52,8 @@ class Barcode {
       }
     }
 
-    return Barcode(json['id'], json['barcode'], json['food_type'], json['maker_name'], json['name'], shelfLife);
+    int remainedDays = DateTime.now().difference(shelfLife).inDays;
+
+    return Barcode(json['id'], json['barcode'], json['food_type'], json['maker_name'], json['name'], shelfLife, remainedDays);
   }
 }

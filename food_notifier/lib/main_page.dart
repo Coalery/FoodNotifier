@@ -18,6 +18,7 @@ class MainPage extends StatefulWidget {
 }
 
 class _MainPageState extends State<MainPage> {
+  final Color mainColor = Colors.redAccent;
   GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
   @override
@@ -41,7 +42,7 @@ class _MainPageState extends State<MainPage> {
                         Container(
                           width: 3,
                           height: 30,
-                          color: Colors.orange[300],
+                          color: mainColor,
                         ),
                         SizedBox(width: 10),
                         Text(
@@ -54,8 +55,14 @@ class _MainPageState extends State<MainPage> {
                   FutureBuilder<List<Food>>(
                     future: DBHelper.getOutofDateFoods(me),
                     builder: (context, snapshot) {
+                      print(snapshot);
                       if(snapshot.hasData) {
                         List<Food> foodList = snapshot.data;
+                        foodList.sort((food1, food2) {
+                          if(food1.barcode.remainedDays < food2.barcode.remainedDays) return 1;
+                          else if(food1.barcode.remainedDays > food2.barcode.remainedDays) return -1;
+                          return 0;
+                        });
 
                         return Container(
                           width: double.infinity,
@@ -64,6 +71,11 @@ class _MainPageState extends State<MainPage> {
                             scrollDirection: Axis.horizontal,
                             itemCount: foodList.length,
                             itemBuilder: (context, index) {
+                              Food food = foodList[index];
+
+                              int remainedDays = food.barcode.remainedDays;
+                              String remainedDaysStr = 'D' + (remainedDays > 0 ? '+' : '') + remainedDays.toString();
+
                               return GestureDetector(
                                 child: Container(
                                   width: 300,
@@ -82,7 +94,19 @@ class _MainPageState extends State<MainPage> {
                                   child: Column(
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
-                                      Text(foodList[index].barcode.productName)
+                                      Text(
+                                        food.barcode.productName,
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                        style: TextStyle(color: mainColor, fontSize: 26, fontWeight: FontWeight.bold)
+                                      ),
+                                      SizedBox(height: 5),
+                                      Text(
+                                        remainedDaysStr,
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                        style: TextStyle(fontSize: 24)
+                                      )
                                     ],
                                   ),
                                 ),
@@ -92,7 +116,10 @@ class _MainPageState extends State<MainPage> {
                           ),
                         );
                       } else {
-                        return Center(child: CircularProgressIndicator());
+                        return Container(
+                          height: 200,
+                          child: Center(child: CircularProgressIndicator()),
+                        );
                       }
                     },
                   ),
@@ -164,12 +191,12 @@ class _MainPageState extends State<MainPage> {
                   icon: Icon(Icons.add),
                   onPressed: () async {
                     ScanResult result = await BarcodeScanner.scan();
-                    result.rawContent = '8801791000055';
+                    result.rawContent = '8809165390245';
                     if(result.rawContent == '') {
                       return;
                     }
 
-                    Barcode food;
+                    Barcode barcode;
 
                     showCupertinoDialog(
                       context: context,
@@ -181,8 +208,8 @@ class _MainPageState extends State<MainPage> {
                               future: DBHelper.getBarcode(result.rawContent),
                               builder: (_, snapshot) {
                                 if(snapshot.hasData) {
-                                  food = snapshot.data;
-                                  if(food == null) {
+                                  barcode = snapshot.data;
+                                  if(barcode == null) {
                                     return Center(child: Text('바코드를 인식할 수 없습니다.'));
                                   }
 
@@ -193,7 +220,7 @@ class _MainPageState extends State<MainPage> {
                                       mainAxisAlignment: MainAxisAlignment.center,
                                       children: [
                                         Text(
-                                          food.productName,
+                                          barcode.productName,
                                           style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                                         ),
                                         SizedBox(height: 20),
@@ -203,7 +230,7 @@ class _MainPageState extends State<MainPage> {
                                         ),
                                         SizedBox(height: 10),
                                         Text(
-                                          formatter.format(food.shelfLife),
+                                          formatter.format(barcode.shelfLife),
                                           style: TextStyle(fontSize: 14),
                                         )
                                       ],
@@ -219,11 +246,11 @@ class _MainPageState extends State<MainPage> {
                             CupertinoDialogAction(
                               child: Text("등록"),
                               onPressed: () async {
-                                if(me == null || food == null) {
+                                if(me == null || barcode == null) {
                                   return;
                                 }
                                 print(me.id);
-                                bool isSuccess = await DBHelper.postFood(me.id, food.id, DateTime.now());
+                                bool isSuccess = await DBHelper.postFood(me.id, barcode.id, DateTime.now());
                                 if(!isSuccess) {
                                   _scaffoldKey.currentState.showSnackBar(
                                     SnackBar(
@@ -231,6 +258,8 @@ class _MainPageState extends State<MainPage> {
                                       backgroundColor: Colors.redAccent,
                                     )
                                   );
+                                } else {
+                                  setState(() {});
                                 }
                                 Navigator.pop(context);
                               },
