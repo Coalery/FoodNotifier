@@ -60,14 +60,28 @@ class _FoodPageState extends State<FoodPage> {
               height: 150,
               child: recipe.smallImage
             ),
-            Container(
-              height: 150,
-              padding: EdgeInsets.all(15),
-              child: Column(
-                children: [
-                  Text(recipe.name, style: TextStyle(color: mainColor, fontWeight: FontWeight.bold, fontSize: 18))
-                ],
-              ),
+            Expanded(
+              child: Container(
+                height: 150,
+                padding: EdgeInsets.all(15),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Text(
+                      recipe.name,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(color: mainColor, fontWeight: FontWeight.bold, fontSize: 20)
+                    ),
+                    SizedBox(height: 15),
+                    Text(
+                      recipe.type + ' | ' + recipe.way,
+                      style: TextStyle(color: Colors.grey, fontSize: 16),
+                    )
+                  ],
+                )
+              )
             )
           ],
         ),

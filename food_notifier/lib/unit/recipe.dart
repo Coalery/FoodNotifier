@@ -36,7 +36,7 @@ class Recipe {
   }
 
   static Widget getImage(String url) {
-    Image errorImage = Image.asset('assets/white.png');
+    Image errorImage = Image.asset('assets/404.png');
     if(url == null) return errorImage;
     if(url == '') return errorImage;
     if(!url.startsWith('http')) return errorImage;
