@@ -7,6 +7,7 @@ import 'package:food_notifier/unit/barcode.dart';
 import 'package:food_notifier/food_page.dart';
 import 'package:food_notifier/unit/food.dart';
 import 'package:food_notifier/unit/user.dart';
+import 'package:food_notifier/util.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
@@ -18,7 +19,6 @@ class MainPage extends StatefulWidget {
 }
 
 class _MainPageState extends State<MainPage> {
-  final Color mainColor = Colors.redAccent;
   GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
   @override
@@ -63,6 +63,18 @@ class _MainPageState extends State<MainPage> {
                           else if(food1.barcode.remainedDays > food2.barcode.remainedDays) return -1;
                           return 0;
                         });
+
+                        if(foodList.length == 0) {
+                          return Container(
+                            width: double.infinity,
+                            height: 200,
+                            alignment: Alignment.center,
+                            child: Text(
+                              '등록된 음식이 없습니다!',
+                              style: TextStyle(fontSize: 18)
+                            ),
+                          );
+                        }
 
                         return Container(
                           width: double.infinity,
@@ -191,7 +203,7 @@ class _MainPageState extends State<MainPage> {
                   icon: Icon(Icons.add),
                   onPressed: () async {
                     ScanResult result = await BarcodeScanner.scan();
-                    result.rawContent = '8809165390245';
+                    result.rawContent = '8801005107020';
                     if(result.rawContent == '') {
                       return;
                     }
@@ -250,7 +262,7 @@ class _MainPageState extends State<MainPage> {
                                   return;
                                 }
                                 print(me.id);
-                                bool isSuccess = await DBHelper.postFood(me.id, barcode.id, DateTime.now());
+                                bool isSuccess = await DBHelper.postFood(me.id, barcode.barcode, DateTime.now());
                                 if(!isSuccess) {
                                   _scaffoldKey.currentState.showSnackBar(
                                     SnackBar(

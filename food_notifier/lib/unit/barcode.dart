@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 class Barcode {
-  final String id;
   final String barcode;
   final String foodType;
   final String makerName;
@@ -9,7 +8,7 @@ class Barcode {
   final DateTime shelfLife;
   final int remainedDays;
 
-  Barcode(this.id, this.barcode, this.foodType, this.makerName, this.productName, this.shelfLife, this.remainedDays);
+  Barcode(this.barcode, this.foodType, this.makerName, this.productName, this.shelfLife, this.remainedDays);
 
   factory Barcode.fromJsonString(String jsonString) {
     JsonCodec codec = new JsonCodec();
@@ -54,6 +53,6 @@ class Barcode {
 
     int remainedDays = DateTime.now().difference(shelfLife).inDays;
 
-    return Barcode(json['id'], json['barcode'], json['food_type'], json['maker_name'], json['name'], shelfLife, remainedDays);
+    return Barcode(json['barcode'], json['food_type'], json['maker_name'], json['name'], shelfLife, remainedDays);
   }
 }

@@ -1,4 +1,7 @@
+import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+
+const Color mainColor = Colors.blueAccent;
 
 DateTime parseStringToDateTime(String val) {
   int year = int.parse(val.substring(0, 4));

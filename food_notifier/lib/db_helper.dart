@@ -49,7 +49,6 @@ class DBHelper {
 
   static Future<List<Recipe>> getRecipes(String ingredient) async {
     http.Response response = await http.get('http://$IP:3000/recipe/$ingredient');
-
     dynamic rawJson = jsonDecode(response.body);
     List<dynamic> jsonArray = List.from(rawJson['result']);
     List<Recipe> resultList = [];
@@ -83,19 +82,18 @@ class DBHelper {
     }
   }
 
-  static Future<bool> postFood(String uid, String fid, DateTime registerTime) async {
+  static Future<bool> postFood(String uid, String bid, DateTime registerTime) async {
     http.Response postResponse = await http.post(
       'http://$IP:3000/addfood',
       headers: {'Content-Type': 'application/json; charset=UTF-8'},
       body: jsonEncode({
         'uid' : uid,
-        'fid' : fid,
+        'bid' : bid,
         'registerDateTime' : parseDateTimeToString(registerTime)
       })
     );
-    print(postResponse.body);
     dynamic json = jsonDecode(postResponse.body);
-    bool isSuccess = json['status'] == 'success';
+    bool isSuccess = json['status'];
     return isSuccess;
   }
 }

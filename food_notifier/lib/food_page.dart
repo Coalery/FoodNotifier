@@ -3,6 +3,7 @@ import 'package:food_notifier/bar_widget.dart';
 import 'package:food_notifier/db_helper.dart';
 import 'package:food_notifier/unit/food.dart';
 import 'package:food_notifier/unit/recipe.dart';
+import 'package:food_notifier/util.dart';
 
 class FoodPageArguments {
   final Food food;
@@ -51,7 +52,7 @@ class _FoodPageState extends State<FoodPage> {
       ),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(10),
-        child: Stack(
+        child: Row(
           children: [
             Container(
               alignment: Alignment.centerRight,
@@ -60,9 +61,13 @@ class _FoodPageState extends State<FoodPage> {
               child: recipe.smallImage
             ),
             Container(
-              width: 300,
               height: 150,
-              color: Colors.black,
+              padding: EdgeInsets.all(15),
+              child: Column(
+                children: [
+                  Text(recipe.name, style: TextStyle(color: mainColor, fontWeight: FontWeight.bold, fontSize: 18))
+                ],
+              ),
             )
           ],
         ),

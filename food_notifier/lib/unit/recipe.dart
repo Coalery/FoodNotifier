@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
 class Recipe {
@@ -16,8 +17,8 @@ class Recipe {
   final double fat; // 지방
   final double nat; // 나트륨
   final String hashTag; // 해시태그
-  final Image smallImage; // 이미지(소)
-  final Image bigImage; // 이미지(대)
+  final Widget smallImage; // 이미지(소)
+  final Widget bigImage; // 이미지(대)
   final String ingredients; // 재료정보
   final List<ProcessUnit> processes;
 
@@ -34,12 +35,16 @@ class Recipe {
     } else return double.parse(target);
   }
 
-  static Image getImage(String url) {
+  static Widget getImage(String url) {
     Image errorImage = Image.asset('assets/white.png');
     if(url == null) return errorImage;
     if(url == '') return errorImage;
     if(!url.startsWith('http')) return errorImage;
-    return Image.network(url, errorBuilder: (_, __, ___) => errorImage,);
+    return CachedNetworkImage(
+      imageUrl: url,
+      placeholder: (context, url) => CircularProgressIndicator(),
+      errorWidget: (context, url, error) => errorImage,
+    );
   }
 
   factory Recipe.fromJson(dynamic json) {
@@ -57,8 +62,8 @@ class Recipe {
 
     String hashTag = json['hash_tag'];
 
-    Image smallImage = getImage(json['image_small']);
-    Image bigImage = getImage(json['image_big']);
+    Widget smallImage = getImage(json['image_small']);
+    Widget bigImage = getImage(json['image_big']);
 
     String ingredients = json['ingredients'];
 
@@ -70,7 +75,7 @@ class Recipe {
       String imageURL = json['manual_img' + intFormat];
       String description = json['manual' + intFormat];
 
-      Image image;
+      Widget image;
       if(imageURL != '') {
         image = getImage(imageURL);
       }
@@ -85,7 +90,7 @@ class Recipe {
 }
 
 class ProcessUnit {
-  final Image image;
+  final Widget image;
   final String description;
   ProcessUnit(this.image, this.description);
 }
