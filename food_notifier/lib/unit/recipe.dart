@@ -44,6 +44,7 @@ class Recipe {
       imageUrl: url,
       placeholder: (context, url) => CircularProgressIndicator(),
       errorWidget: (context, url, error) => errorImage,
+      fit: BoxFit.cover,
     );
   }
 
@@ -74,6 +75,8 @@ class Recipe {
 
       String imageURL = json['manual_img' + intFormat];
       String description = json['manual' + intFormat];
+
+      description = description.replaceAll("\n", " ");
 
       Widget image;
       if(imageURL != '') {
