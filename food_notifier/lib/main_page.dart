@@ -6,6 +6,7 @@ import 'package:food_notifier/provider/login_provider.dart';
 import 'package:food_notifier/unit/barcode.dart';
 import 'package:food_notifier/food_page.dart';
 import 'package:food_notifier/unit/food.dart';
+import 'package:food_notifier/unit/recipe.dart';
 import 'package:food_notifier/unit/user.dart';
 import 'package:food_notifier/util.dart';
 import 'package:intl/intl.dart';
@@ -55,7 +56,6 @@ class _MainPageState extends State<MainPage> {
                   FutureBuilder<List<Food>>(
                     future: DBHelper.getOutofDateFoods(me),
                     builder: (context, snapshot) {
-                      print(snapshot);
                       if(snapshot.hasData) {
                         List<Food> foodList = snapshot.data;
                         foodList.sort((food1, food2) {
@@ -158,24 +158,70 @@ class _MainPageState extends State<MainPage> {
                     padding: EdgeInsets.symmetric(horizontal: 20),
                     child: AspectRatio(
                       aspectRatio: 1,
-                      child: Stack(
-                        alignment: Alignment.bottomLeft,
-                        children: [
-                          Container(
-                            width: double.infinity,
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(20.0),
-                              child: Image.network('http://www.foodsafetykorea.go.kr/uploadimg/cook/10_00017_2.png', fit: BoxFit.fill),
-                            )
-                          ),
-                          Column(
-                            children: [
-                              Text(
-                                ''
-                              )
-                            ],
-                          )
-                        ],
+                      child: FutureBuilder<Recipe>(
+                        future: DBHelper.getRecommendRecipe(me.id),
+                        builder: (context, snapshot) {
+                          if(snapshot.hasData) {
+                            Recipe recipe = snapshot.data;
+
+                            return Stack(
+                              alignment: Alignment.bottomLeft,
+                              children: [
+                                Container(
+                                  width: double.infinity,
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(20.0),
+                                    child: recipe.smallImage,
+                                  )
+                                ),
+                                Container(
+                                  margin: EdgeInsets.symmetric(horizontal: 24, vertical: 60),
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        recipe.name,
+                                        style: TextStyle(
+                                          fontFamily: 'NanumMyeongjo',
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.w800,
+                                          fontSize: 24,
+                                          shadows: [
+                                            Shadow(
+                                              offset: Offset(2.0, 2.0),
+                                              blurRadius: 3,
+                                              color: Colors.black38
+                                            )
+                                          ]
+                                        )
+                                      ),
+                                      SizedBox(height: 10),
+                                      Text(
+                                        recipe.type + ' | ' + recipe.way,
+                                        style: TextStyle(
+                                          fontFamily: 'NanumMyeongjo',
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.w700,
+                                          fontSize: 16,
+                                          shadows: [
+                                            Shadow(
+                                              offset: Offset(2.0, 2.0),
+                                              blurRadius: 3,
+                                              color: Colors.black38
+                                            )
+                                          ]
+                                        )
+                                      )
+                                    ],
+                                  )
+                                )
+                              ],
+                            );
+                          } else {
+                            return Center(child: CircularProgressIndicator());
+                          }
+                        },
                       ),
                     ),
                   ),

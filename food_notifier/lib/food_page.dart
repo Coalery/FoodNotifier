@@ -30,6 +30,8 @@ class _FoodPageState extends State<FoodPage> {
         future = future.then((_) {
           return Future.delayed(Duration(milliseconds: 100), () {
             _listItems.add(_buildRecipeItem(recipeList[i]));
+            if(_listKey.currentState == null)
+              return;
             _listKey.currentState.insertItem(_listItems.length - 1);
           });
         });

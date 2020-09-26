@@ -58,6 +58,14 @@ class DBHelper {
     return resultList;
   }
 
+  static Future<Recipe> getRecommendRecipe(String uid) async {
+    http.Response response = await http.get('http://$IP:3000/recommend/$uid');
+    dynamic rawJson = jsonDecode(response.body);
+    bool success = rawJson['status'];
+    if(!success) return null;
+    return Recipe.fromJson(rawJson['info']);
+  }
+
   // POST
 
   static Future<String> postUserIfNotExist(String name, int age, String gender, String job) async {
