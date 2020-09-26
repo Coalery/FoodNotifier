@@ -17,6 +17,7 @@ dependencies:
   shared_preferences: any
   cached_network_image: ^2.3.2+1
   scroll_snap_list: ^0.4.1
+  decimal: ^0.3.5
 
   cupertino_icons: ^0.1.3
 

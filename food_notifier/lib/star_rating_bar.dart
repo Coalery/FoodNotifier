@@ -1,3 +1,4 @@
+import 'package:decimal/decimal.dart';
 import 'package:flutter/material.dart';
 
 class StarRatingBar extends StatefulWidget {
@@ -63,7 +64,7 @@ class _StarRatingBarState extends State<StarRatingBar> {
 
         double rawRating = localX / widget._size;
 
-        double result;
+        Decimal rawResult;
         double minDelta = widget._spacing + 1;
         for(int i=0; widget._spacing * i <= widget._starCount; i++) {
           double delta = rawRating - widget._spacing * i;
@@ -71,9 +72,11 @@ class _StarRatingBarState extends State<StarRatingBar> {
 
           if(delta < minDelta) {
             minDelta = delta;
-            result = widget._spacing * i;
+            rawResult = Decimal.parse(widget._spacing.toString()) * Decimal.fromInt(i);
           }
         }
+
+        double result = rawResult.toDouble();
 
         setState(() => _rating = result);
         widget._onRatingChanged(result);
