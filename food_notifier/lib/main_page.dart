@@ -3,6 +3,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:food_notifier/db_helper.dart';
 import 'package:food_notifier/provider/login_provider.dart';
+import 'package:food_notifier/recipe_page.dart';
+import 'package:food_notifier/star_rating_bar.dart';
 import 'package:food_notifier/unit/barcode.dart';
 import 'package:food_notifier/food_page.dart';
 import 'package:food_notifier/unit/food.dart';
@@ -164,59 +166,62 @@ class _MainPageState extends State<MainPage> {
                           if(snapshot.hasData) {
                             Recipe recipe = snapshot.data;
 
-                            return Stack(
-                              alignment: Alignment.bottomLeft,
-                              children: [
-                                Container(
-                                  width: double.infinity,
-                                  child: ClipRRect(
-                                    borderRadius: BorderRadius.circular(20.0),
-                                    child: recipe.smallImage,
-                                  )
-                                ),
-                                Container(
-                                  margin: EdgeInsets.symmetric(horizontal: 24, vertical: 60),
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        recipe.name,
-                                        style: TextStyle(
-                                          fontFamily: 'NanumMyeongjo',
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.w800,
-                                          fontSize: 24,
-                                          shadows: [
-                                            Shadow(
-                                              offset: Offset(2.0, 2.0),
-                                              blurRadius: 3,
-                                              color: Colors.black38
-                                            )
-                                          ]
+                            return GestureDetector(
+                              child: Stack(
+                                alignment: Alignment.bottomLeft,
+                                children: [
+                                  Container(
+                                    width: double.infinity,
+                                    child: ClipRRect(
+                                      borderRadius: BorderRadius.circular(20.0),
+                                      child: recipe.smallImage,
+                                    )
+                                  ),
+                                  Container(
+                                    margin: EdgeInsets.symmetric(horizontal: 24, vertical: 60),
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      mainAxisAlignment: MainAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          recipe.name,
+                                          style: TextStyle(
+                                            fontFamily: 'NanumMyeongjo',
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.w800,
+                                            fontSize: 24,
+                                            shadows: [
+                                              Shadow(
+                                                offset: Offset(2.0, 2.0),
+                                                blurRadius: 3,
+                                                color: Colors.black38
+                                              )
+                                            ]
+                                          )
+                                        ),
+                                        SizedBox(height: 10),
+                                        Text(
+                                          recipe.type + ' | ' + recipe.way,
+                                          style: TextStyle(
+                                            fontFamily: 'NanumMyeongjo',
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.w700,
+                                            fontSize: 16,
+                                            shadows: [
+                                              Shadow(
+                                                offset: Offset(2.0, 2.0),
+                                                blurRadius: 3,
+                                                color: Colors.black38
+                                              )
+                                            ]
+                                          )
                                         )
-                                      ),
-                                      SizedBox(height: 10),
-                                      Text(
-                                        recipe.type + ' | ' + recipe.way,
-                                        style: TextStyle(
-                                          fontFamily: 'NanumMyeongjo',
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.w700,
-                                          fontSize: 16,
-                                          shadows: [
-                                            Shadow(
-                                              offset: Offset(2.0, 2.0),
-                                              blurRadius: 3,
-                                              color: Colors.black38
-                                            )
-                                          ]
-                                        )
-                                      )
-                                    ],
+                                      ],
+                                    )
                                   )
-                                )
-                              ],
+                                ]
+                              ),
+                              onTap: () => Navigator.pushNamed(context, RecipePage.routeName, arguments: RecipePageArguments(recipe)),
                             );
                           } else {
                             return Center(child: CircularProgressIndicator());
@@ -226,15 +231,18 @@ class _MainPageState extends State<MainPage> {
                     ),
                   ),
                   SizedBox(height: 20),
+                  StarRatingBar(
+                    onRatingChanged: (v) {print(v);}
+                  )
                 ],
               ),
             ),
             Container(
-              alignment: Alignment.bottomCenter,
+              alignment: Alignment.bottomRight,
               child: Container(
                 width: 64,
                 height: 64,
-                margin: EdgeInsets.only(bottom: 10),
+                margin: EdgeInsets.only(right:20, bottom: 20),
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(100.0),
