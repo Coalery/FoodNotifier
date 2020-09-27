@@ -23,6 +23,7 @@ class MainPage extends StatefulWidget {
 
 class _MainPageState extends State<MainPage> {
   GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
+  double _rating = 0.0;
 
   @override
   Widget build(BuildContext context) {
@@ -158,81 +159,100 @@ class _MainPageState extends State<MainPage> {
                   SizedBox(height: 10),
                   Container(
                     padding: EdgeInsets.symmetric(horizontal: 20),
-                    child: AspectRatio(
-                      aspectRatio: 1,
-                      child: FutureBuilder<Recipe>(
-                        future: DBHelper.getRecommendRecipe(me.id),
-                        builder: (context, snapshot) {
-                          if(snapshot.hasData) {
-                            Recipe recipe = snapshot.data;
+                    child: FutureBuilder<Recipe>(
+                      future: DBHelper.getRecommendRecipe(me.id),
+                      builder: (context, snapshot) {
+                        if(snapshot.hasData) {
+                          Recipe recipe = snapshot.data;
 
-                            return GestureDetector(
-                              child: Stack(
-                                alignment: Alignment.bottomLeft,
-                                children: [
-                                  Container(
-                                    width: double.infinity,
-                                    child: ClipRRect(
-                                      borderRadius: BorderRadius.circular(20.0),
-                                      child: recipe.smallImage,
-                                    )
-                                  ),
-                                  Container(
-                                    margin: EdgeInsets.symmetric(horizontal: 24, vertical: 60),
-                                    child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      mainAxisAlignment: MainAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          recipe.name,
-                                          style: TextStyle(
-                                            fontFamily: 'NanumMyeongjo',
-                                            color: Colors.white,
-                                            fontWeight: FontWeight.w800,
-                                            fontSize: 24,
-                                            shadows: [
-                                              Shadow(
-                                                offset: Offset(2.0, 2.0),
-                                                blurRadius: 3,
-                                                color: Colors.black38
-                                              )
-                                            ]
+                          return Column(
+                            children: [
+                              GestureDetector(
+                                child: Stack(
+                                  alignment: Alignment.bottomLeft,
+                                  children: [
+                                    Container(
+                                      width: double.infinity,
+                                      child: ClipRRect(
+                                        borderRadius: BorderRadius.circular(20.0),
+                                        child: recipe.smallImage,
+                                      )
+                                    ),
+                                    Container(
+                                      margin: EdgeInsets.symmetric(horizontal: 24, vertical: 60),
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        mainAxisAlignment: MainAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            recipe.name,
+                                            style: TextStyle(
+                                              fontFamily: 'NanumMyeongjo',
+                                              color: Colors.white,
+                                              fontWeight: FontWeight.w800,
+                                              fontSize: 24,
+                                              shadows: [
+                                                Shadow(
+                                                  offset: Offset(2.0, 2.0),
+                                                  blurRadius: 3,
+                                                  color: Colors.black38
+                                                )
+                                              ]
+                                            )
+                                          ),
+                                          SizedBox(height: 10),
+                                          Text(
+                                            recipe.type + ' | ' + recipe.way,
+                                            style: TextStyle(
+                                              fontFamily: 'NanumMyeongjo',
+                                              color: Colors.white,
+                                              fontWeight: FontWeight.w700,
+                                              fontSize: 16,
+                                              shadows: [
+                                                Shadow(
+                                                  offset: Offset(2.0, 2.0),
+                                                  blurRadius: 3,
+                                                  color: Colors.black38
+                                                )
+                                              ]
+                                            )
                                           )
-                                        ),
-                                        SizedBox(height: 10),
-                                        Text(
-                                          recipe.type + ' | ' + recipe.way,
-                                          style: TextStyle(
-                                            fontFamily: 'NanumMyeongjo',
-                                            color: Colors.white,
-                                            fontWeight: FontWeight.w700,
-                                            fontSize: 16,
-                                            shadows: [
-                                              Shadow(
-                                                offset: Offset(2.0, 2.0),
-                                                blurRadius: 3,
-                                                color: Colors.black38
-                                              )
-                                            ]
-                                          )
-                                        )
-                                      ],
+                                        ],
+                                      )
                                     )
-                                  )
-                                ]
+                                  ]
+                                ),
+                                onTap: () => Navigator.pushNamed(context, RecipePage.routeName, arguments: RecipePageArguments(recipe)),
                               ),
-                              onTap: () => Navigator.pushNamed(context, RecipePage.routeName, arguments: RecipePageArguments(recipe)),
-                            );
-                          } else {
-                            return Center(child: CircularProgressIndicator());
-                          }
-                        },
-                      ),
+                              SizedBox(height: 20),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  StarRatingBar(
+                                    onRatingChanged: (v) => v = _rating
+                                  ),
+                                  FlatButton(
+                                    child: Container(
+                                      alignment: Alignment.center,
+                                      height: 40,
+                                      child: Text(
+                                        '적용',
+                                        style: TextStyle(color: Colors.orange[300], fontWeight: FontWeight.bold, fontSize: 24)
+                                      ),
+                                    ),
+                                    onPressed: () async {
+                                      await DBHelper.postRating(me.id, recipe.id, _rating);
+                                    }
+                                  )
+                                ],
+                              )
+                            ],
+                          );
+                        } else {
+                          return AspectRatio(aspectRatio: 1, child: Center(child: CircularProgressIndicator()));
+                        }
+                      },
                     ),
-                  ),
-                  SizedBox(height: 20),
-                  StarRatingBar(
-                    onRatingChanged: (v) {print(v);}
                   )
                 ],
               ),

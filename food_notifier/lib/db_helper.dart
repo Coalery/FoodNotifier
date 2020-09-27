@@ -105,4 +105,18 @@ class DBHelper {
     bool isSuccess = json['status'];
     return isSuccess;
   }
+
+  static Future<bool> postRating(String uid, String rid, double rating) async {
+    http.Response postResponse = await http.post(
+      'http://$IP:3000/rating',
+      headers: {'Content-Type': 'application/json; charset=UTF-8'},
+      body: jsonEncode({
+        'uid' : uid,
+        'bid' : rid,
+        'rating' : rating
+      })
+    );
+    print(postResponse.body);
+    return true;
+  }
 }
