@@ -277,7 +277,6 @@ class _MainPageState extends State<MainPage> {
                   icon: Icon(Icons.add),
                   onPressed: () async {
                     ScanResult result = await BarcodeScanner.scan();
-                    result.rawContent = '8801005107020';
                     if(result.rawContent == '') {
                       return;
                     }
